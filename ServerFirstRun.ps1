@@ -18,10 +18,13 @@ Set-ItemProperty -Path $EdgePolicyPath -Name 'NewTabPageLocation' -Type String -
 
 
 
-# Create key and set DoNotPopWACConsoleAtSMLaunch
-New-Item -Path 'HKLM:\SOFTWARE\Microsoft\ServerManager' -Force | Out-Null
+if (-not (Test-Path 'HKLM:\SOFTWARE\Microsoft\ServerManager')) {
+    New-Item -Path 'HKLM:\SOFTWARE\Microsoft\ServerManager' | Out-Null
+}
 Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\ServerManager' -Name 'DoNotPopWACConsoleAtSMLaunch' -Value 1 -Type DWord
 
-# Create key and set DoNotOpenAtLogon
-New-Item -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Server\ServerManager' -Force | Out-Null
+if (-not (Test-Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Server\ServerManager')) {
+    New-Item -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Server\ServerManager' -Force | Out-Null
+}
 Set-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Server\ServerManager' -Name 'DoNotOpenAtLogon' -Value 1 -Type DWord
+
