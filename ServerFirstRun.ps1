@@ -47,3 +47,16 @@ $InstallerPath = $Env:TEMP + "\" + $NppInstaller
 Invoke-WebRequest -Uri $Npp.Uri -OutFile $InstallerPath -UseBasicParsing
 
 Start-Process -FilePath $InstallerPath -ArgumentList "/S" -Wait
+
+
+$7z = Get-EvergreenApp -Name 7zip | Where-Object { $_.Architecture -eq "x64" -and $_.InstallerType -eq "Default" -and $_.Type -eq "exe"}
+$7zInstaller = Split-Path -Path $7z.Uri -Leaf
+$InstallerPath = $Env:TEMP + "\" + $7zInstaller
+Invoke-WebRequest -Uri $7z.Uri -OutFile $InstallerPath -UseBasicParsing
+
+Start-Process -FilePath $InstallerPath -ArgumentList "/S" -Wait
+
+if (-not (Test-Path 'C:\tools')) { New-Item -Path 'C:\tools' -ItemType Directory | Out-Null }
+Invoke-WebRequest -Uri "https://download.sysinternals.com/files/SysinternalsSuite.zip" -OutFile "$Env:TEMP\SysinternalsSuite.zip"
+Expand-Archive -Path "$Env:TEMP\SysinternalsSuite.zip" -DestinationPath "C:\tools" -Force
+Get-ChildItem C:\tools | Unblock-File
